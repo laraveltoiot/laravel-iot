@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
@@ -15,7 +15,7 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 #[Layout('components.layouts.auth')]
-class Login extends Component
+final class Login extends Component
 {
     #[Validate('required|string|email')]
     public string $email = '';
@@ -24,36 +24,6 @@ class Login extends Component
     public string $password = '';
 
     public bool $remember = false;
-
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function login(): void
-    {
-        $this->validate();
-
-        $this->ensureIsNotRateLimited();
-
-        $user = $this->validateCredentials();
-
-        if (Features::canManageTwoFactorAuthentication() && $user->hasEnabledTwoFactorAuthentication()) {
-            Session::put([
-                'login.id' => $user->getKey(),
-                'login.remember' => $this->remember,
-            ]);
-
-            $this->redirect(route('two-factor.login'), navigate: true);
-
-            return;
-        }
-
-        Auth::login($user, $this->remember);
-
-        RateLimiter::clear($this->throttleKey());
-        Session::regenerate();
-
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
-    }
 
     /**
      * Validate the user's credentials.
@@ -100,5 +70,35 @@ class Login extends Component
     protected function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+    }
+
+    /**
+     * Handle an incoming authentication request.
+     */
+    public function login(): void
+    {
+        $this->validate();
+
+        $this->ensureIsNotRateLimited();
+
+        $user = $this->validateCredentials();
+
+        if (Features::canManageTwoFactorAuthentication() && $user->hasEnabledTwoFactorAuthentication()) {
+            Session::put([
+                'login.id' => $user->getKey(),
+                'login.remember' => $this->remember,
+            ]);
+
+            $this->redirect(route('two-factor.login'), navigate: true);
+
+            return;
+        }
+
+        Auth::login($user, $this->remember);
+
+        RateLimiter::clear($this->throttleKey());
+        Session::regenerate();
+
+        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 }
