@@ -32,7 +32,7 @@ final class Login extends Component
     {
         $user = Auth::getProvider()->retrieveByCredentials(['email' => $this->email, 'password' => $this->password]);
 
-        if (! $user || ! Auth::getProvider()->validateCredentials($user, ['password' => $this->password])) {
+        if (! $user instanceof User || ! Auth::getProvider()->validateCredentials($user, ['password' => $this->password])) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
