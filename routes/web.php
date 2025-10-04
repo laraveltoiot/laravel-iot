@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use App\Http\Controllers\UserController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -33,5 +34,7 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 });
+
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
 require __DIR__.'/auth.php';

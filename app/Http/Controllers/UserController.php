@@ -1,0 +1,11 @@
+<?php declare(strict_types=1);
+
+namespace App\Http\Controllers;
+
+final class UserController extends Controller
+{
+    public function index()
+    {
+        return view('user.index');
+    }
+}
