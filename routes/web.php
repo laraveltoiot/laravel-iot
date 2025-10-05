@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
-use App\Http\Controllers\UserController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
+use App\Livewire\Users\ShowUser;
+use App\Livewire\Users\UsersIndex;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -17,6 +18,9 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/users', UsersIndex::class)->name('users.index');
+    Route::get('/users/{user}', ShowUser::class)->name('users.show');
+
     Route::redirect('settings', 'settings/profile');
 
     Route::get('settings/profile', Profile::class)->name('settings.profile');
@@ -34,7 +38,5 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 });
-
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
 require __DIR__.'/auth.php';
