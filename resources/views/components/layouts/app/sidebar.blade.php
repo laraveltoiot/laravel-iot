@@ -128,6 +128,12 @@
 
         {{ $slot }}
 
+        @persist('toast')
+        <flux:toast.group position="bottom end">
+            <flux:toast />
+        </flux:toast.group>
+        @endpersist
+
         @fluxScripts
     </body>
 </html>
