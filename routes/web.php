@@ -17,10 +17,13 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
+// only for admins
+Route::middleware('role:admin')->prefix('admin')->name('admin')->group(function () {
     Route::get('/users', UsersIndex::class)->name('users.index');
     Route::get('/users/{user}', ShowUser::class)->name('users.show');
+});
 
+Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
     Route::get('settings/profile', Profile::class)->name('settings.profile');

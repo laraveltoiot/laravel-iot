@@ -17,7 +17,7 @@
     </div>
 
     <div class="pt-2">
-        <a href="{{ route('users.index') }}">
+        <a href="{{ route('adminusers.index') }}">
             <flux:button icon="arrow-left">Back to Users</flux:button>
         </a>
     </div>

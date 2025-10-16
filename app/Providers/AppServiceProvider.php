@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Enums\RoleEnum;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,13 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->defineBladeDirectives();
+    }
+
+    private function defineBladeDirectives(): void
+    {
+        Blade::if('role', function (string $role) {
+            return RoleEnum::hasRole($role);
+        });
     }
 }

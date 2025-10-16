@@ -2,13 +2,16 @@
 
 namespace App\Livewire\Users;
 
+use App\Enums\RoleEnum;
 use App\Models\User;
 use Flux\Flux;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -33,9 +36,17 @@ final class UsersIndex extends Component
 
     public string $createEmail = '';
 
+    public string $role = '';
+
     public string $editName = '';
 
     public string $editEmail = '';
+
+    #[Computed]
+    public function availableRoles(): Collection
+    {
+        return collect(RoleEnum::cases());
+    }
 
     // ----------- Rendering -----------
     public function render(): Factory|View|\Illuminate\View\View
@@ -63,6 +74,7 @@ final class UsersIndex extends Component
     // ----------- Delete -----------
     public function delete(int $userId): void
     {
+        $this->authorizeAdmin();
         $user = User::find($userId);
         $name = $user->name;
         $user->delete();
@@ -90,6 +102,7 @@ final class UsersIndex extends Component
 
     public function saveEdit(): void
     {
+        $this->authorizeAdmin();
         $this->validate([
             'editName' => 'required|string|min:2|max:255',
             'editEmail' => 'required|email|max:255|unique:users,email,'.$this->editingId,
@@ -119,24 +132,27 @@ final class UsersIndex extends Component
     {
         $this->resetErrorBag();
         $this->resetValidation();
-        $this->reset(['createName', 'createEmail']);
+        $this->reset(['createName', 'createEmail', 'role']);
         $this->creating = true;
     }
 
     public function createUser(): void
     {
+        $this->authorizeAdmin();
         $this->validate([
             'createName' => 'required|string|min:2|max:255',
             'createEmail' => 'required|email|max:255|unique:users,email',
+            'role' => ['required', Rule::in(collect(RoleEnum::cases())->map(fn (RoleEnum $r) => $r->value)->all())],
         ]);
 
         User::create([
+            'role' => RoleEnum::from($this->role),
             'name' => $this->createName,
             'email' => $this->createEmail,
-            'password' => Hash::make(Str::random(25)),
+            'password' => Hash::make(Str::random(60)),
         ]);
 
-        $this->reset(['createName', 'createEmail', 'creating']);
+        $this->reset(['createName', 'createEmail', 'role', 'creating']);
         $this->resetPage();
 
         Flux::toast(
@@ -161,5 +177,10 @@ final class UsersIndex extends Component
             })
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(50);
+    }
+
+    private function authorizeAdmin(): void
+    {
+        abort_unless(auth()->user()?->isAdmin(), 403, 'Only administrators can perform this action.');
     }
 }

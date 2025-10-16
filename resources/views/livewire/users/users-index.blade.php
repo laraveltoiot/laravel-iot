@@ -39,7 +39,7 @@
                         <flux:dropdown position="bottom" align="end">
                             <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom"></flux:button>
                             <flux:menu>
-                                <flux:menu.item href="{{ route('users.show', $user) }}">Show</flux:menu.item>
+                                <flux:menu.item href="{{ route('adminusers.show', $user) }}">Show</flux:menu.item>
 
                                 {{-- EDIT: trigger + populate form --}}
                                 <flux:modal.trigger name="edit-user">
@@ -149,6 +149,13 @@
                 wire:model.live.debounce.300ms="createEmail"
                 :error="$errors->first('createEmail')"
             />
+
+            <flux:select wire:model="role" :label="__('Role')" :error="$errors->first('role')">
+                <option value="">{{ __('Select a role') }}</option>
+                @foreach($this->availableRoles as $availableRole)
+                    <option value="{{ $availableRole->value }}">{{ ucfirst($availableRole->value) }}</option>
+                @endforeach
+            </flux:select>
 
             @if ($errors->any())
                 <flux:callout variant="danger">
