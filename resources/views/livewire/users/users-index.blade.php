@@ -3,12 +3,19 @@
         Users ({{ $this->users->total() }})
     </flux:heading>
 
-    <div class="mb-4">
+    <div class="mb-4 flex items-center gap-3">
         <flux:input
             icon="magnifying-glass"
             placeholder="Search user"
             wire:model.live.debounce.300ms="search"
+            class="flex-1"
         />
+
+        <flux:modal.trigger name="create-user">
+            <flux:button variant="primary" icon="plus" wire:click="openCreate">
+                New User
+            </flux:button>
+        </flux:modal.trigger>
     </div>
 
     <flux:table :paginate="$this->users">
@@ -115,6 +122,48 @@
                 </flux:modal.close>
                 <flux:button type="submit" variant="primary">
                     Save changes
+                </flux:button>
+            </div>
+        </form>
+    </flux:modal>
+
+    {{-- Create User Modal --}}
+    <flux:modal name="create-user" class="md:w-96">
+        <form wire:submit.prevent="createUser" class="space-y-6">
+            <div>
+                <flux:heading size="lg">Create user</flux:heading>
+                <flux:text class="mt-2">Add a new user to your workspace.</flux:text>
+            </div>
+
+            <flux:input
+                label="Name"
+                placeholder="User name"
+                wire:model.live.debounce.300ms="createName"
+                :error="$errors->first('createName')"
+            />
+
+            <flux:input
+                label="Email"
+                type="email"
+                placeholder="user@example.com"
+                wire:model.live.debounce.300ms="createEmail"
+                :error="$errors->first('createEmail')"
+            />
+
+            @if ($errors->any())
+                <flux:callout variant="danger">
+                    Please fix the highlighted fields.
+                </flux:callout>
+            @endif
+
+            <div class="flex gap-2">
+                <flux:spacer />
+                <flux:modal.close>
+                    <flux:button type="button" variant="ghost">Cancel</flux:button>
+                </flux:modal.close>
+                <flux:button type="submit" variant="primary" wire:loading.attr="disabled">
+                    <span wire:loading.remove>Create</span>
+                    <span wire:loading>Creating...</span>
                 </flux:button>
             </div>
         </form>

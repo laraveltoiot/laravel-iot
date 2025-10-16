@@ -65,7 +65,6 @@
             "pint"
         ],
         "stan": [
-            "composer ide",
             "phpstan analyse --memory-limit=1024M"
         ],
         "pest": [

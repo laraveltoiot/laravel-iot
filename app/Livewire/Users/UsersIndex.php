@@ -3,30 +3,38 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
+use Flux\Flux;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Flux\Flux;
 
 final class UsersIndex extends Component
 {
     use WithPagination;
 
     public string $sortBy = 'name';
+
     public string $sortDirection = 'asc';
+
     public string $search = '';
 
     // ----------- Edit state -----------
     public int $editingId;
 
-    #[Validate('required|string|min:2|max:255', onUpdate: false)]
+    // ----------- Create state -----------
+    public bool $creating = false;
+
+    public string $createName = '';
+
+    public string $createEmail = '';
+
     public string $editName = '';
 
-    #[Validate('required|email|max:255', onUpdate: false)]
     public string $editEmail = '';
 
     // ----------- Rendering -----------
@@ -71,6 +79,9 @@ final class UsersIndex extends Component
     // ----------- Edit -----------
     public function openEdit(int $userId): void
     {
+        $this->resetErrorBag();
+        $this->resetValidation();
+
         $user = User::findOrFail($userId);
         $this->editingId = $user->id;
         $this->editName = (string) $user->name;
@@ -79,12 +90,15 @@ final class UsersIndex extends Component
 
     public function saveEdit(): void
     {
-        $this->validate();
+        $this->validate([
+            'editName' => 'required|string|min:2|max:255',
+            'editEmail' => 'required|email|max:255|unique:users,email,'.$this->editingId,
+        ]);
 
         $user = User::find($this->editingId);
 
         $user->update([
-            'name'  => $this->editName,
+            'name' => $this->editName,
             'email' => $this->editEmail,
         ]);
 
@@ -98,6 +112,41 @@ final class UsersIndex extends Component
             variant: 'success'
         );
         Flux::modals()->close('edit-user');
+    }
+
+    // ----------- Create -----------
+    public function openCreate(): void
+    {
+        $this->resetErrorBag();
+        $this->resetValidation();
+        $this->reset(['createName', 'createEmail']);
+        $this->creating = true;
+    }
+
+    public function createUser(): void
+    {
+        $this->validate([
+            'createName' => 'required|string|min:2|max:255',
+            'createEmail' => 'required|email|max:255|unique:users,email',
+        ]);
+
+        User::create([
+            'name' => $this->createName,
+            'email' => $this->createEmail,
+            'password' => Hash::make(Str::random(25)),
+        ]);
+
+        $this->reset(['createName', 'createEmail', 'creating']);
+        $this->resetPage();
+
+        Flux::toast(
+            text: 'User created successfully.',
+            heading: 'User created',
+            variant: 'success'
+        );
+
+        Flux::modals()->close('create-user');
+        // TODO Send email invitation
     }
 
     #[Computed]
