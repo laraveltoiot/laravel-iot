@@ -9,6 +9,7 @@
             placeholder="Search user"
             wire:model.live.debounce.300ms="search"
             class="flex-1"
+            autocomplete="off"
         />
 
         <flux:modal.trigger name="create-user">
@@ -101,6 +102,7 @@
                 placeholder="User name"
                 wire:model.live.debounce.300ms="editName"
                 :error="$errors->first('editName')"
+                autocomplete="off"
             />
             <flux:input
                 label="Email"
@@ -108,12 +110,13 @@
                 placeholder="user@example.com"
                 wire:model.live.debounce.300ms="editEmail"
                 :error="$errors->first('editEmail')"
+                autocomplete="off"
             />
-            @if ($errors->any())
+            <div class="transition-all duration-200 {{ $errors->any() ? '' : 'invisible' }}">
                 <flux:callout variant="danger">
                     Please fix the highlighted fields.
                 </flux:callout>
-            @endif
+            </div>
 
             <div class="flex gap-2">
                 <flux:spacer />
@@ -140,6 +143,7 @@
                 placeholder="User name"
                 wire:model.live.debounce.300ms="createName"
                 :error="$errors->first('createName')"
+                autocomplete="off"
             />
 
             <flux:input
@@ -148,6 +152,7 @@
                 placeholder="user@example.com"
                 wire:model.live.debounce.300ms="createEmail"
                 :error="$errors->first('createEmail')"
+                autocomplete="off"
             />
 
             <flux:select wire:model="role" :label="__('Role')" :error="$errors->first('role')">
@@ -157,11 +162,11 @@
                 @endforeach
             </flux:select>
 
-            @if ($errors->any())
+            <div class="transition-all duration-200 {{ $errors->any() ? '' : 'invisible' }}">
                 <flux:callout variant="danger">
                     Please fix the highlighted fields.
                 </flux:callout>
-            @endif
+            </div>
 
             <div class="flex gap-2">
                 <flux:spacer />

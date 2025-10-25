@@ -14,6 +14,7 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Dashboard</flux:navlist.item>
+                    <flux:navlist.item icon="cpu-chip" :href="route('devices-index')" :current="request()->routeIs('devices-index')">Devices</flux:navlist.item>
                    @role('admin')
                     <flux:navlist.item icon="users" :href="route('adminusers.index')" :current="request()->routeIs('adminusers.index')">Users</flux:navlist.item>
                     @endrole

@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+use App\Livewire\Devices\DevicesIndex;
+use App\Livewire\Devices\ShowDevice;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -40,6 +42,9 @@ Route::middleware(['auth'])->group(function () {
             ),
         )
         ->name('two-factor.show');
+
+    Route::get('/devices', DevicesIndex::class)->name('devices-index');
+    Route::get('/devices/{device}', ShowDevice::class)->name('devices.show');
 });
 
 require __DIR__.'/auth.php';
