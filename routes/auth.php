@@ -27,3 +27,5 @@ Route::middleware('auth')->group(function () {
 
 Route::post('logout', Logout::class)
     ->name('logout');
+
+//test
