@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use App\Livewire\DeviceData;
 use App\Livewire\Devices\DevicesIndex;
 use App\Livewire\Devices\ShowDevice;
 use App\Livewire\Settings\Appearance;
@@ -18,6 +19,9 @@ Route::get('/', function () {
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+// Public route to view live device data
+Route::get('/device-data', DeviceData::class)->name('device-data');
 
 // only for admins
 Route::middleware('role:admin')->prefix('admin')->name('admin')->group(function () {
