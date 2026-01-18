@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -20,6 +21,7 @@ final class UsersIndex extends Component
 {
     use WithPagination;
 
+    #[Layout('layouts.app')]
     public string $sortBy = 'name';
 
     public string $sortDirection = 'asc';

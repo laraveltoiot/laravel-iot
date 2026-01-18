@@ -2,9 +2,14 @@
 
 namespace App\Livewire\Settings;
 
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 final class Appearance extends Component
 {
-    //
+    #[Layout('layouts.app')]
+    public function render(): \Illuminate\View\View
+    {
+        return view('livewire.settings.appearance');
+    }
 }

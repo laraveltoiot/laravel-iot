@@ -5,10 +5,12 @@ namespace App\Livewire\Users;
 use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 final class ShowUser extends Component
 {
+    #[Layout('layouts.app')]
     public User $user;
 
     public function mount(User $user): void

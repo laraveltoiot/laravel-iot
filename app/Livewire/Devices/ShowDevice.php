@@ -5,10 +5,12 @@ namespace App\Livewire\Devices;
 use App\Models\Device;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 final class ShowDevice extends Component
 {
+    #[Layout('layouts.app')]
     public Device $device;
 
     public function mount(Device $device): void

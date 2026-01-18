@@ -10,6 +10,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -17,6 +18,7 @@ final class DevicesIndex extends Component
 {
     use WithPagination;
 
+    #[Layout('layouts.app')]
     public string $sortBy = 'name';
 
     public string $sortDirection = 'asc';

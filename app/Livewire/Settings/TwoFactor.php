@@ -8,6 +8,7 @@ use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class TwoFactor extends Component
 {
+    #[Layout('layouts.app')]
     #[Locked]
     public bool $twoFactorEnabled;
 
